@@ -25,6 +25,13 @@ While `mri_synthstrip` performs well across modalities, T2-weighted images may e
 
 ---
 
+## Hardware Note
+
+Performance may vary depending on acquisition conditions and signal characteristics.
+This approach was developed to address T2-weighted signal instability observed in high-density coil acquisitions (e.g., 32-channel), which can affect mask consistency.
+
+---
+
 ## Optimization Workflow
 
 Parameters should be adjusted based on the histogram provided in each subject log.
