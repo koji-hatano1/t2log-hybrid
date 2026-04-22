@@ -8,6 +8,8 @@ It improves mask stability in susceptibility-prone regions (e.g., orbitofrontal 
 
 ## Overview
 
+This design specifically targets T2w signal dropout by introducing spatially constrained substitution with T1w-derived information.
+
 While `mri_synthstrip` performs well across modalities, T2-weighted images may exhibit instability due to intensity inhomogeneity, flow voids, and susceptibility-related signal dropout.
 
 **t2log-hybrid** extends t2log-strip by introducing spatially constrained integration of T1w information, enabling more stable masking in artifact-prone regions.
@@ -16,10 +18,10 @@ While `mri_synthstrip` performs well across modalities, T2-weighted images may e
 
 ## Key Concept
 
-- T2w (log-transformed): primary contrast for masking
-- T1w (squared): selectively integrated in artifact-prone regions
-- Spatial constraint: limits T1w substitution to anterior–ventral regions
-- Statistical thresholding: determines mask boundaries independently for T2w and T1w
+- T2w (log-transformed): primary signal for masking
+- T1w (squared): auxiliary signal for artifact-prone regions
+- Spatial constraint: restricts T1w usage to anterior–ventral areas
+- Statistical thresholding: applied independently to each modality
 
 ---
 
@@ -53,7 +55,7 @@ Recommended reference values:
 - 2.241 (97.5%)
 - 2.576 (99%)
 
-Tip: Prioritize avoiding over-stripping.
+Tip: Prioritize avoiding over-stripping; conservative thresholding generally yields more stable results across subjects.
 
 ---
 
