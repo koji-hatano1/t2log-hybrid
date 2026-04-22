@@ -23,6 +23,8 @@ While `mri_synthstrip` performs well across modalities, T2-weighted images may e
 - Spatial constraint: restricts T1w usage to anterior–ventral areas
 - Statistical thresholding: applied independently to T2w and T1w intensity distributions
 
+<img src="./images/OFC_SAFE_IMAGE.png" width="400">
+
 ---
 
 ## Hardware Note
