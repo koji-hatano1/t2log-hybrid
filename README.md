@@ -18,13 +18,13 @@ While `mri_synthstrip` performs well across modalities, T2-weighted images may e
 
 ## Key Concept
 
-*   **Signal Transformation for Optimized Masking**
-    *   **T2w (log-transformed):** Primary signal source to normalize and enhance the masking contrast.
-    *   **T1w (squared):** Auxiliary signal source to boost intensity in artifact-prone areas.
+*   **Signal Transformation for Residual Signal Suppression**
+    *   **T2w (log-transformed)** and **T1w (squared)**:
+        Pre-processes the signals to facilitate the separation of residual extra-cerebral tissues (remaining after skull stripping) by optimizing the intensity distributions for statistical thresholding.
 *   **Independent Statistical Thresholding**
-    *   Thresholds are applied to each transformed signal distribution independently to generate candidate binary masks for both T2w and T1w.
-*   **Spatial Hybridization (AC-referenced Constraint)**
-    *   Integrates the two masks by restricting the **T1w-derived mask** exclusively to **anterior–ventral regions** (relative to the AC), effectively filling signal dropouts in the primary T2w mask.
+    *   Applies automated intensity cutoffs to the T2w and T1w distributions independently, generating clean candidate masks that exclude residual non-brain signals.
+*   **Spatial Hybridization (AC-referenced)**
+    *   Finalizes the mask by integrating the two candidates based on spatial location: the **T1w-derived mask** is adaptively applied only to **anterior–ventral regions** (relative to the AC) to compensate for T2w signal instability, while the **T2w-derived mask** is used for the rest of the volume.
 
 <img src="./images/OFC_SAFE_IMAGE.png" width="400">
 
