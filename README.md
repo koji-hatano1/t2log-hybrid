@@ -41,7 +41,7 @@ Parameters should be adjusted based on the histogram provided in each subject lo
 Use the histogram in each subject log to adjust thresholding separately for T2w and T1w components.
 
 - Initial setting:
-  ci_threshold_t2=1.960, ci_threshold_t1=1.960
+SD_FACTOR_T2=1.960, SD_FACTOR_T1=1.960
 
 - If brain tissue is over-stripped:
   increase the corresponding threshold (e.g., 2.241 or 2.576)
@@ -68,8 +68,8 @@ Edit the configuration in t2log-hybrid.sh:
     Subjlist="001 002 003"
     BASE_PATH="/path/to/your/project"
     border_num=2
-    ci_threshold_t2=1.960
-    ci_threshold_t1=1.960
+    SD_FACTOR_T2=1.960
+    SD_FACTOR_T1=1.960
 
 ---
 
