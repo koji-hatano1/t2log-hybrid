@@ -18,10 +18,13 @@ While `mri_synthstrip` performs well across modalities, T2-weighted images may e
 
 ## Key Concept
 
-- T2w (log-transformed): primary signal for masking
-- T1w (squared): auxiliary signal for artifact-prone regions
-- Spatial constraint: restricts T1w usage to anterior–ventral areas
-- Statistical thresholding: applied independently to T2w and T1w intensity distributions
+*   **Signal Transformation for Optimized Masking**
+    *   **T2w (log-transformed):** Primary signal source to normalize and enhance the masking contrast.
+    *   **T1w (squared):** Auxiliary signal source to boost intensity in artifact-prone areas.
+*   **Independent Statistical Thresholding**
+    *   Thresholds are applied to each transformed signal distribution independently to generate candidate binary masks for both T2w and T1w.
+*   **Spatial Hybridization (AC-referenced Constraint)**
+    *   Integrates the two masks by restricting the **T1w-derived mask** exclusively to **anterior–ventral regions** (relative to the AC), effectively filling signal dropouts in the primary T2w mask.
 
 <img src="./images/OFC_SAFE_IMAGE.png" width="400">
 
