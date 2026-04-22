@@ -12,7 +12,7 @@ This design specifically targets T2w signal dropout by introducing spatially con
 
 While `mri_synthstrip` performs well across modalities, T2-weighted images may exhibit instability due to intensity inhomogeneity, flow voids, and susceptibility-related signal dropout.
 
-**t2log-hybrid** extends t2log-strip by introducing spatially constrained integration of T1w information, enabling more stable masking in artifact-prone regions.
+**t2log-hybrid** extends t2log-strip by introducing spatially constrained integration of T1w information, enabling more stable masking in artifact-prone regions such as the orbitofrontal cortex.
 
 ---
 
@@ -21,7 +21,7 @@ While `mri_synthstrip` performs well across modalities, T2-weighted images may e
 - T2w (log-transformed): primary signal for masking
 - T1w (squared): auxiliary signal for artifact-prone regions
 - Spatial constraint: restricts T1w usage to anterior–ventral areas
-- Statistical thresholding: applied independently to each modality
+- Statistical thresholding: applied independently to T2w and T1w intensity distributions
 
 ---
 
@@ -96,8 +96,8 @@ After execution:
 
 ## Recovery
 
-    chmod +x recover_t2ls.sh
-    ./recover_t2ls.sh
+    chmod +x recover_t2lh.sh
+    ./recover_t2lh.sh
 
 - Restores original files from _bet.nii.gz
 - Recommended before re-running
@@ -115,7 +115,7 @@ After execution:
 
 ## QA & Reporting
 
-A summary CSV (hss_t2ls_summary_*.csv) is generated:
+A summary CSV (hss_t2lh_summary_*.csv) is generated:
 
 - intensity thresholds
 - SD factors
@@ -125,7 +125,7 @@ A summary CSV (hss_t2ls_summary_*.csv) is generated:
 
 ## Viewer
 
-    ./fview_t2ls.sh [Subject_ID]
+    ./fview_t2lh.sh [Subject_ID]
 
 ---
 
