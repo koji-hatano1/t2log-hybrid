@@ -25,6 +25,8 @@ While `mri_synthstrip` performs well across modalities, T2-weighted images may e
 
 <img src="./images/OFC_SAFE_IMAGE.png" width="400">
 
+*** Schematic illustration of spatially constrained hybrid masking, where T1-weighted information is selectively integrated to stabilize brain masking in regions affected by T2-weighted signal instability. ***
+
 ---
 
 ## Hardware Note
