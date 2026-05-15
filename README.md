@@ -148,3 +148,7 @@ A summary CSV (hss_t2lh_summary_*.csv) is generated:
 - FSL 6.0.7
 - FreeSurfer 7.4.1 (mri_synthstrip)
 - bc
+
+## Citation
+
+Hatano, K. (2026). *t2log-hybrid* (Version 4.11), a hybrid T2w- and T1w-based masking tool [Software]. GitHub. https://github.com/koji-hatano1/t2log-hybrid
