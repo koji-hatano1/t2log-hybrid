@@ -1,75 +1,79 @@
 # t2log-hybrid
 
-This tool provides robust brain extraction using a hybrid extension of FreeSurfer’s `mri_synthstrip`, combining log-transformed T2w and squared T1w with spatially constrained statistical thresholding.
+This tool provides hybrid T2w- and T1w-based masking for HCP-style cortical reconstruction using FreeSurfer’s `mri_synthstrip`.
 
-It improves mask stability in susceptibility-prone regions (e.g., orbitofrontal cortex) by selectively integrating T1w information where T2w signal is unreliable.
+The method combines log-transformed T2w-based statistical refinement with a T1w-derived SynthStrip brain mask. Outside a predefined inferior-anterior region, the refined T2w mask is constrained by the T1w brain mask. Within this region, the T2w-derived mask is replaced by the T1w-derived brain mask alone to reduce cortical over-exclusion associated with local T2w signal loss.
 
 ---
 
 ## Overview
 
-This design specifically targets T2w signal dropout by introducing spatially constrained substitution with T1w-derived information.
+T2-weighted images may exhibit local signal loss and intensity instability, particularly in susceptibility-prone regions such as the orbitofrontal cortex. When T2w-derived masks are further refined using intensity-based thresholding, these local signal abnormalities can lead to excessive exclusion of cortical tissue.
 
-While `mri_synthstrip` performs well across modalities, T2-weighted images may exhibit instability due to intensity inhomogeneity, flow voids, and susceptibility-related signal dropout.
+**t2log-hybrid** extends the T2w-based masking strategy used in `t2log-strip` by incorporating a T1w-derived anatomical brain envelope.
 
-**t2log-hybrid** extends t2log-strip by introducing spatially constrained integration of T1w information, enabling more stable masking in artifact-prone regions such as the orbitofrontal cortex.
+Outside a predefined inferior-anterior switching region, the statistically refined T2w mask is intersected with the T1w SynthStrip brain mask. Within the switching region, the T2w-derived mask is replaced by the T1w-derived brain mask alone.
+
+No additional T1w intensity-based thresholding is applied.
 
 ---
 
 ## Key Concept
 
-*   **Signal Transformation for Residual Signal Suppression**
-    *   **T2w (log-transformed)** and **T1w (squared)**:
-        Pre-processes the signals to facilitate the separation of residual extra-cerebral tissues (remaining after skull stripping) by optimizing the intensity distributions for statistical thresholding.
-*   **Independent Statistical Thresholding**
-    *   Applies automated intensity cutoffs to the T2w and T1w distributions independently, generating clean candidate masks that exclude residual non-brain signals.
-*   **Spatial Hybridization (AC-referenced)**
-    *   Finalizes the mask by integrating the two candidates based on spatial location: the **T1w-derived mask** is adaptively applied only to **anterior–ventral regions** (relative to the AC) to compensate for T2w signal instability, while the **T2w-derived mask** is used for the rest of the volume.
+- **T2w-based refinement**
+  - The SynthStrip-derived T2w brain image is log-transformed and statistically thresholded to reduce residual non-brain signal.
 
-<img src="./images/OFC_SAFE_IMAGE.png" width="400">
+- **T1w-derived brain envelope**
+  - The T1w SynthStrip brain mask is used as an anatomical brain-envelope constraint.
+  - No additional T1w intensity-based thresholding is applied.
 
-**Schematic illustration of spatially constrained hybrid masking, where T1-weighted information is selectively integrated to stabilize brain masking in regions affected by T2-weighted signal instability.**
+- **Spatial hybridization**
+  - Outside the predefined inferior-anterior switching region, the refined T2w-derived mask is intersected with the T1w-derived brain mask.
+  - Within the switching region, the T2w-derived mask is replaced by the T1w-derived brain mask alone.
 
----
+- **AC-referenced switching region**
+  - The switching region is defined relative to the anterior commissure (AC).
+  - It extends across the full left-right dimension and includes tissue anterior and inferior to the AC.
 
-## Hardware Note
-
-Performance may vary depending on acquisition conditions and signal characteristics.
-This approach was developed to address T2-weighted signal instability observed in high-density coil acquisitions (e.g., 32-channel), which can affect mask consistency.
-
----
-
-## Optimization Workflow
-
-Parameters should be adjusted based on the histogram provided in each subject log.
-
-### 1. Initial border_num Selection
-
-- border_num=2: recommended default (conservative)
-- border_num=1: tighter extraction (use if needed)
+- **Final mask refinement**
+  - The combined mask undergoes one erosion followed by one mean dilation to remove isolated residual components while maintaining spatial continuity.
 
 ---
 
-### 2. Fine-tuning via ci_threshold_t2 and ci_threshold_t1
+## Protocol-specific parameter setting
 
-Use the histogram in each subject log to adjust thresholding separately for T2w and T1w components.
+Masking parameters are determined for each imaging protocol rather than optimized separately for individual subjects.
 
-- Initial setting:
-SD_FACTOR_T2=1.960, SD_FACTOR_T1=1.960
+For a new acquisition protocol, intensity histograms and resulting masks are inspected in a small number of representative subjects to identify appropriate values for `border_num` and `SD_FACTOR_T2`.
 
-- If brain tissue is over-stripped:
-  increase the corresponding threshold (e.g., 2.241 or 2.576)
+Once selected, the same parameter settings are applied to all subjects acquired with that protocol.
 
-- If non-brain tissue remains:
-  decrease the threshold toward 1.960
+Differences in image contrast across acquisition protocols may therefore require separate parameter selection, while subject-by-subject tuning is not part of the intended workflow.
 
-Recommended reference values:
+---
 
-- 1.960 (95%)
-- 2.241 (97.5%)
-- 2.576 (99%)
+## Parameter selection workflow
 
-Tip: Prioritize avoiding over-stripping; conservative thresholding generally yields more stable results across subjects.
+### 1. Initial `border_num` Selection
+
+In the `# --- Configuration ---` section:
+
+- `border_num=1`: tighter extraction
+- `border_num=2`: more conservative (use if over-stripping occurs)
+
+---
+
+### 2. Protocol-level selection of `SD_FACTOR_T2`
+
+Use intensity histograms and resulting masks from a small number of representative subjects to select an appropriate `SD_FACTOR_T2` for the imaging protocol:
+
+- **1.960 (95%)**: standard starting point
+- **2.241 (97.5%)**: intermediate
+- **2.576 (99%)**: conservative (use if brain tissue is removed)
+
+👉 Goal: preserve brain tissue while reducing residual non-brain signal.
+
+> **Tip:** Prioritize avoiding over-stripping.
 
 ---
 
@@ -77,34 +81,32 @@ Tip: Prioritize avoiding over-stripping; conservative thresholding generally yie
 
 ### 1. Setup
 
-Edit the configuration in t2log-hybrid.sh:
+Edit the configuration in `t2log-hybrid.sh`:
 
+    # --- Configuration ---
     Subjlist="001 002 003"
     BASE_PATH="/path/to/your/project"
     border_num=2
     SD_FACTOR_T2=1.960
-    SD_FACTOR_T1=1.960
-
----
 
 ### 2. Execution
 
     chmod +x t2log-hybrid.sh
     ./t2log-hybrid.sh
 
----
+### 3. Protocol-level review
 
-### 3. Review and Adjust
+Before processing the full cohort:
 
-After execution:
+1. Run `t2log-hybrid` on a small number of representative subjects.
+2. Review the intensity histograms and resulting masks.
+3. Select `border_num` and `SD_FACTOR_T2` for the imaging protocol.
+4. Apply the selected settings unchanged to all remaining subjects acquired with the same protocol.
 
-1. Check histogram in $SUBJ_LOG
-2. Evaluate mask quality
-3. Adjust parameters if needed
-4. Re-run until optimal
+- **If the brain is over-stripped**: increase `SD_FACTOR_T2` (e.g., to 2.576) or set `border_num=2`
+- **If non-brain tissue remains**: decrease `SD_FACTOR_T2` (e.g., to 1.960) or set `border_num=1`
 
-- If over-stripped: increase thresholds or use border_num=2
-- If under-stripped: decrease thresholds or use border_num=1
+> **Tip:** Prioritize avoiding over-stripping when selecting protocol-level parameters.
 
 ---
 
@@ -113,27 +115,33 @@ After execution:
     chmod +x recover_t2lh.sh
     ./recover_t2lh.sh
 
-- Restores original files from _bet.nii.gz
-- Recommended before re-running
+- Restores original files from `_bet.nii.gz`
+- Recommended before re-running with new protocol-level parameters
 
 ---
 
 ## HCP Integration
+
+Designed for HCP pipeline structure:
 
 - Updates T1w and T2w brain images
 - Synchronizes masks to MNINonLinear space
 - Applies transforms automatically
 - Creates backups before modification
 
+The masking procedure is applied before cortical surface reconstruction and does not modify the underlying surface reconstruction algorithm.
+
 ---
 
 ## QA & Reporting
 
-A summary CSV (hss_t2lh_summary_*.csv) is generated:
+A summary CSV (`hss_t2lh_summary_*.csv`) is generated:
 
 - intensity thresholds
 - SD factors
 - voxel drop rates
+
+👉 Useful for cohort-level QA.
 
 ---
 
@@ -145,10 +153,15 @@ A summary CSV (hss_t2lh_summary_*.csv) is generated:
 
 ## Prerequisites
 
+Ensure the following are available in your `$PATH`:
+
 - FSL 6.0.7
-- FreeSurfer 7.4.1 (mri_synthstrip)
+- FreeSurfer 7.4.1 (`mri_synthstrip`)
 - bc
+
+---
 
 ## Citation
 
-Hatano, K. (2026). *t2log-hybrid* (Version 4.11), a hybrid T2w- and T1w-based masking tool [Software]. GitHub. https://github.com/koji-hatano1/t2log-hybrid
+Hatano, K. (2026). *t2log-hybrid* (Version 4.11), a hybrid T2w- and T1w-based masking tool [Software]. GitHub.  
+https://github.com/koji-hatano1/t2log-hybrid
