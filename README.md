@@ -1,6 +1,6 @@
 # t2log-hybrid
 
-This tool provides hybrid T2w- and T1w-based masking for FastSurfer-based T1w cortical reconstruction within an HCP-style processing workflow using FreeSurfer’s `mri_synthstrip`.
+This tool provides hybrid T2w- and T1w-based masking for FastSurfer-based T1w cortical reconstruction within an HCP-style processing workflow using FreeSurfer’s mri_synthstrip.
 
 The method combines log-transformed T2w-based statistical refinement with a T1w-derived SynthStrip brain mask. Outside a predefined inferior-anterior region, the refined T2w mask is constrained by the T1w brain mask. Within this region, the T2w-derived mask is replaced by the T1w-derived brain mask alone.
 
