@@ -14,6 +14,8 @@ T2-weighted images may exhibit local signal loss, particularly in susceptibility
 
 Outside the predefined inferior-anterior switching region, the refined T2w mask is intersected with the T1w SynthStrip brain mask. Within the switching region, the T2w-derived mask is replaced by the T1w-derived brain mask alone.
 
+<img src="./images/ac_inferior_anterior_switching_region.png" width="500">
+
 ---
 
 ## Key Concept
