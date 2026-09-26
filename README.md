@@ -1,20 +1,18 @@
 # t2log-hybrid
 
-This tool provides hybrid T2w- and T1w-based masking for HCP-style cortical reconstruction using FreeSurfer’s `mri_synthstrip`.
+This tool provides hybrid T2w- and T1w-based masking for FastSurfer-based T1w cortical reconstruction within an HCP-style processing workflow using FreeSurfer’s `mri_synthstrip`.
 
-The method combines log-transformed T2w-based statistical refinement with a T1w-derived SynthStrip brain mask. Outside a predefined inferior-anterior region, the refined T2w mask is constrained by the T1w brain mask. Within this region, the T2w-derived mask is replaced by the T1w-derived brain mask alone to reduce cortical over-exclusion associated with local T2w signal loss.
+The method combines log-transformed T2w-based statistical refinement with a T1w-derived SynthStrip brain mask. Outside a predefined inferior-anterior region, the refined T2w mask is constrained by the T1w brain mask. Within this region, the T2w-derived mask is replaced by the T1w-derived brain mask alone.
 
 ---
 
 ## Overview
 
-T2-weighted images may exhibit local signal loss and intensity instability, particularly in susceptibility-prone regions such as the orbitofrontal cortex. When T2w-derived masks are further refined using intensity-based thresholding, these local signal abnormalities can lead to excessive exclusion of cortical tissue.
+T2-weighted images may exhibit local signal loss, particularly in susceptibility-prone regions such as the orbitofrontal cortex. When T2w-based statistical refinement is applied uniformly, such local signal loss can lead to excessive exclusion of cortical tissue.
 
-**t2log-hybrid** extends the T2w-based masking strategy used in `t2log-strip` by incorporating a T1w-derived anatomical brain envelope.
+**t2log-hybrid** incorporates a T1w-derived anatomical brain envelope to reduce this effect while retaining T2w-based refinement across the remainder of the brain. The resulting hybrid mask is intended for FastSurfer-based T1w cortical reconstruction within an HCP-style processing workflow and supports practical downstream T1w/T2w-derived myelin mapping.
 
-Outside a predefined inferior-anterior switching region, the statistically refined T2w mask is intersected with the T1w SynthStrip brain mask. Within the switching region, the T2w-derived mask is replaced by the T1w-derived brain mask alone.
-
-No additional T1w intensity-based thresholding is applied.
+Outside the predefined inferior-anterior switching region, the refined T2w mask is intersected with the T1w SynthStrip brain mask. Within the switching region, the T2w-derived mask is replaced by the T1w-derived brain mask alone.
 
 ---
 
