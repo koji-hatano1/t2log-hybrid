@@ -14,12 +14,12 @@ BASE_PATH="/path/to/your/project"
 
 # --- Extraction and threshold settings ---
 BORDER_NUM=2
-SD_FACTOR_T2=1.960
+SD_FACTOR_T2=3
 
 # Reference:
-# 1.960 (95%)    : standard
-# 2.241 (97.5%)  : intermediate
-# 2.576 (99%)    : conservative
+# 2 SD : more aggressive refinement
+# 3 SD : recommended default
+# 4 SD : more conservative refinement
 
 # --- Temporary file handling ---
 # 0: remove temporary files after each session
