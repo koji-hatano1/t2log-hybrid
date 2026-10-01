@@ -54,22 +54,22 @@ Differences in image contrast across acquisition protocols may therefore require
 
 ## Parameter selection workflow
 
-### 1. Initial `border_num` Selection
+### 1. Initial `border_num` selection
 
 In the `# --- Configuration ---` section:
 
-- `border_num=1`: tighter extraction
-- `border_num=2`: more conservative (use if over-stripping occurs)
+- `border_num=2`: recommended default; provides conservative brain extraction
+- `border_num=1`: tighter extraction (use if additional removal of peripheral non-brain tissue is needed)
 
 ---
 
 ### 2. Protocol-level selection of `SD_FACTOR_T2`
 
-Use intensity histograms and resulting masks from a small number of representative subjects to select an appropriate `SD_FACTOR_T2` for the imaging protocol:
+Use intensity histograms and resulting masks from a small number of representative subjects to confirm an appropriate `SD_FACTOR_T2` for the imaging protocol:
 
-- **1.960 (95%)**: standard starting point
-- **2.241 (97.5%)**: intermediate
-- **2.576 (99%)**: conservative (use if brain tissue is removed)
+- **2 SD**: more aggressive refinement
+- **3 SD**: recommended default
+- **4 SD**: more conservative refinement (use if brain tissue is removed)
 
 👉 Goal: preserve brain tissue while reducing residual non-brain signal.
 
@@ -87,7 +87,7 @@ Edit the configuration in `t2log-hybrid.sh`:
     Subjlist="001 002 003"
     BASE_PATH="/path/to/your/project"
     border_num=2
-    SD_FACTOR_T2=1.960
+    SD_FACTOR_T2=3
 
 ### 2. Execution
 
@@ -100,13 +100,13 @@ Before processing the full cohort:
 
 1. Run `t2log-hybrid` on a small number of representative subjects.
 2. Review the intensity histograms and resulting masks.
-3. Select `border_num` and `SD_FACTOR_T2` for the imaging protocol.
+3. Confirm `border_num` and `SD_FACTOR_T2` for the imaging protocol.
 4. Apply the selected settings unchanged to all remaining subjects acquired with the same protocol.
 
-- **If the brain is over-stripped**: increase `SD_FACTOR_T2` (e.g., to 2.576) or set `border_num=2`
-- **If non-brain tissue remains**: decrease `SD_FACTOR_T2` (e.g., to 1.960) or set `border_num=1`
+- **If the brain is over-stripped**: increase `SD_FACTOR_T2` (e.g., from 3 SD to 4 SD)
+- **If residual non-brain tissue remains**: decrease `SD_FACTOR_T2` (e.g., from 3 SD to 2 SD)
 
-> **Tip:** Prioritize avoiding over-stripping when selecting protocol-level parameters.
+> **Tip:** Start with the recommended default of 3 SD and prioritize avoiding over-stripping.
 
 ---
 
