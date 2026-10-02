@@ -44,7 +44,7 @@ Outside the predefined inferior-anterior switching region, the refined T2w mask 
 
 Masking parameters are determined for each imaging protocol rather than optimized separately for individual subjects.
 
-For a new acquisition protocol, intensity histograms and resulting masks are inspected in a small number of representative subjects to identify appropriate values for `border_num` and `SD_FACTOR_T2`.
+For a new acquisition protocol, intensity histograms and resulting masks are inspected in a small number of representative subjects to identify appropriate values for `BORDER_NUM` and `SD_FACTOR_T2`.
 
 Once selected, the same parameter settings are applied to all subjects acquired with that protocol.
 
@@ -54,12 +54,12 @@ Differences in image contrast across acquisition protocols may therefore require
 
 ## Parameter selection workflow
 
-### 1. Initial `border_num` selection
+### 1. Initial `BORDER_NUM` selection
 
 In the `# --- Configuration ---` section:
 
-- `border_num=2`: recommended default; provides conservative brain extraction
-- `border_num=1`: tighter extraction (use if additional removal of peripheral non-brain tissue is needed)
+- `BORDER_NUM=2`: recommended default; provides conservative brain extraction
+- `BORDER_NUM=1`: tighter extraction (use if additional removal of peripheral non-brain tissue is needed)
 
 ---
 
@@ -86,7 +86,7 @@ Edit the configuration in `t2log-hybrid.sh`:
     # --- Configuration ---
     Subjlist="001 002 003"
     BASE_PATH="/path/to/your/project"
-    border_num=2
+    BORDER_NUM=2
     SD_FACTOR_T2=3
 
 ### 2. Execution
@@ -100,7 +100,7 @@ Before processing the full cohort:
 
 1. Run `t2log-hybrid` on a small number of representative subjects.
 2. Review the intensity histograms and resulting masks.
-3. Confirm `border_num` and `SD_FACTOR_T2` for the imaging protocol.
+3. Confirm `BORDER_NUM` and `SD_FACTOR_T2` for the imaging protocol.
 4. Apply the selected settings unchanged to all remaining subjects acquired with the same protocol.
 
 - **If the brain is over-stripped**: increase `SD_FACTOR_T2` (e.g., from 3 SD to 4 SD)
