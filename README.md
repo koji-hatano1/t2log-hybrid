@@ -1,4 +1,4 @@
-# t2log-hybrid
+# t2log-hybrid v4.2
 
 This tool provides hybrid T2w- and T1w-based masking for FastSurfer-based T1w cortical reconstruction within an HCP-style processing workflow using FreeSurfer’s mri_synthstrip.
 
@@ -112,6 +112,8 @@ Before processing the full cohort:
 
 ## Recovery
 
+Before running, set `Subjlist` and `BASE_PATH` in `recover_t2lh.sh` to match the subjects and project used for processing.
+
     chmod +x recover_t2lh.sh
     ./recover_t2lh.sh
 
@@ -146,6 +148,8 @@ A summary CSV (`hss_t2lh_summary_*.csv`) is generated:
 ---
 
 ## Viewer
+
+Before running, set `BASE_PATH` in `fview_t2lh.sh` to the project used for processing.
 
     ./fview_t2lh.sh [Subject_ID]
 

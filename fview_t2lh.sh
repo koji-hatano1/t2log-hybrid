@@ -24,7 +24,7 @@ echo "--- Launching Freeview: Session ${SUBJ} ---"
 echo "Layer 1 (Bottom): T2w_acpc_dc_restore (Gray, Opacity: 1.0)"
 echo "Layer 2         : T1w_acpc_dc_restore (Gray, Opacity: 1.0)"
 echo "Layer 3 (Middle): Original BET (_bet) [Colormap: Heat, Opacity: 1.0]"
-echo "Layer 4 (Top)   : t2log-strip Mask [Colormap: Jet, Opacity: 0.5]"
+echo "Layer 4 (Top)   : t2log-hybrid Mask [Colormap: Jet, Opacity: 0.5]"
 
 # --- Freeview Execution Command ---
 freeview -v \
